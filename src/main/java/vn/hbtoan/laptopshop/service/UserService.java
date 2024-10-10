@@ -37,4 +37,42 @@ public class UserService {
     public List<User> findByEmail(String email) {
         return this.userRepository.findByEmailContaining(email);
     }
+
+    public User findById(Long id) {
+        Optional<User> user = this.userRepository.findById(id);
+
+        if (user.isPresent()) {
+            return user.get();
+        }
+
+        return null;
+    }
+
+    public User update(User user, Long id) {
+        try {
+            User userUpdate = this.findById(id);
+
+            if (userUpdate != null) {
+                userUpdate.setEmail(user.getEmail());
+                userUpdate.setFullName(user.getFullName());
+                userUpdate.setPhone(user.getPhone());
+                userUpdate.setAddress(user.getAddress());
+
+                return this.userRepository.save(userUpdate);
+            }
+
+            return null;
+
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void delete(Long id) {
+        try {
+            this.userRepository.deleteById(id);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 }

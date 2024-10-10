@@ -3,7 +3,7 @@ package vn.hbtoan.laptopshop.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hbtoan.laptopshop.domain.User;
 import vn.hbtoan.laptopshop.service.UserService;
@@ -42,7 +42,34 @@ public class UserController {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
-    
+
+    @RequestMapping(value = "/admin/user/update/{id}", method=RequestMethod.POST)
+    public String requestMethodUpdate(Model model, @ModelAttribute User user, @PathVariable("id") Long id) {
+        try {
+            System.out.println("ID: " + id);
+            User newUser = this.userService.update(user, id);
+            
+            if (newUser != null) {
+                return "redirect:/admin/user";
+            } else {
+                return "redirect:/admin/user/edit/" + user.getId();
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+    }
+
+    @RequestMapping("/admin/user/delete/{id}")
+    public String userDeletePage(Model model, @PathVariable("id") Long id) {
+        try {
+            this.userService.delete(id);
+            return "redirect:/admin/user";
+        } catch (Exception e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+    }
+
     @RequestMapping("/admin/user")
     public String userPage(Model model, @RequestParam(value = "email", required = false) String email) {
         if (email != null) {
@@ -56,5 +83,20 @@ public class UserController {
             model.addAttribute("users", users);
             return "admin/user/list";
         }
+    }
+
+    // :id
+    @RequestMapping("/admin/user/detail/{id}")
+    public String userDetailPage(Model model, @PathVariable("id") Long id) {
+        User user = this.userService.findById(id);
+        model.addAttribute("user", user);
+        return "admin/user/detail";
+    }
+
+    @RequestMapping("/admin/user/edit/{id}")
+    public String userEditPage(Model model, @PathVariable("id") Long id) {
+        User user = this.userService.findById(id);
+        model.addAttribute("user", user);
+        return "admin/user/edit";
     }
 }
