@@ -1,6 +1,5 @@
 package vn.hbtoan.laptopshop.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,42 +15,25 @@ import lombok.Setter;
 import lombok.ToString;
 import java.util.List;
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@Entity
-@Table(name = "users")
-public class User {
-
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", length = 255, nullable = false, unique = true)  
-    private String email;
-
-    @Column(name = "password", length = 255, nullable = false)
-    private String password;
-
-    @Column(name = "full_name")
-    private String fullName;
-
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "phone")
-    private String phone;
-
-    @Column(name = "avatar")
-    private String avatar;
+    private double totalPrice;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders;
-    
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetails;
+
 }
