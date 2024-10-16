@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package vn.hbtoan.laptopshop;
 
 import org.springframework.boot.SpringApplication;
@@ -16,22 +15,3 @@ public class LaptopshopApplication {
 	}
 
 }
-=======
-package vn.hbtoan.laptopshop;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication(
-	exclude = {
-		org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
-	}
-)
-public class LaptopshopApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(LaptopshopApplication.class, args);
-	}
-
-}
->>>>>>> 893de404eba84b784dead3bb210b439cd81f42f2
