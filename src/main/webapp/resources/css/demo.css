@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .button {
   background-color: #4caf50; /* Green */
   border: none;
@@ -10,3 +11,17 @@
   margin: 4px 2px;
   cursor: pointer;
 }
+=======
+.button {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+>>>>>>> 893de404eba84b784dead3bb210b439cd81f42f2
