@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hbtoan.laptopshop.domain.User;
+import vn.hbtoan.laptopshop.dto.CreateUserDTO;
 import vn.hbtoan.laptopshop.service.UserService;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,9 +29,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/admin/user/save", method=RequestMethod.POST)
-    public String requestMethodName(Model model, @ModelAttribute User user) {
+    public String requestMethodName(Model model, @ModelAttribute("userDTO") CreateUserDTO createUserDTO) {
         try {
-            User newUser = this.userService.save(user);
+            User newUser = this.userService.save(createUserDTO);
             
             if (newUser != null) {
                 return "redirect:/admin/user";

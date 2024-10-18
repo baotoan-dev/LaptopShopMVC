@@ -18,6 +18,7 @@ uri="http://www.springframework.org/tags/form" %>
       src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
       crossorigin="anonymous"
     ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
       body {
         background-color: #f8f9fa;
@@ -57,6 +58,7 @@ uri="http://www.springframework.org/tags/form" %>
                         class="form-control"
                         id="email"
                         path="email"
+                        required="required"
                       />
                     </div>
                     <div class="col-6">
@@ -65,6 +67,7 @@ uri="http://www.springframework.org/tags/form" %>
                         class="form-control"
                         id="password"
                         path="password"
+                        required="required"
                       />
                     </div>
                   </div>
@@ -91,7 +94,6 @@ uri="http://www.springframework.org/tags/form" %>
                   <div class="mb-3 d-flex justify-content-between gap-2">
                     <div class="col-6">
                       <label for="role" class="form-label">Role</label>
-                      <!-- select -->
                       <form:select class="form-select" id="role" path="role">
                         <form:option value="USER" label="User" />
                         <form:option value="ADMIN" label="Admin" />
@@ -100,15 +102,48 @@ uri="http://www.springframework.org/tags/form" %>
                     <div class="col-6">
                       <label for="avatar" class="form-label">Avatar</label>
                       <!-- select -->
-                      <form:input
+                      <input
                         type="file"
                         class="form-control"
                         id="avatar"
-                        path="avatar"
                         accept=".jpg, .jpeg, .png"
                       />
+
+                      <small class="text-muted mt-2"
+                        >Only .jpg, .jpeg, .png files are allowed</small
+                      >
+                    </div>
+                    <form:hidden path="avatar" id="hiddenAvatar" />
+                  </div>
+                  <div class="col-12 mb-3">
+                    <div
+                      style="width: 200px; position: relative"
+                      id="avatarContainer"
+                    >
+                      <img
+                        style="width: 100%; height: 100%; display: none"
+                        alt="avatar preview"
+                        id="avatarPreview"
+                        class="position-relative"
+                      />
+                      <div
+                        id="removeAvatar"
+                        class="btn btn-danger"
+                        style="
+                          position: absolute;
+                          top: 5px;
+                          right: 5px;
+                          display: none;
+                          border-radius: 50%;
+                          opacity: 0.8;
+                          object-fit: cover;
+                        "
+                      >
+                        X
+                      </div>
                     </div>
                   </div>
+
                   <div class="mb-3 d-flex justify-content-between gap-2">
                     <a href="/admin/user" class="btn btn-secondary col-6"
                       >Cancel</a
@@ -130,5 +165,49 @@ uri="http://www.springframework.org/tags/form" %>
       crossorigin="anonymous"
     ></script>
     <script src="/js/scripts.js"></script>
+
+    <script>
+      const removeAvatar = $("#removeAvatar");
+      $(document).ready(() => {
+        const avatarFile = $("#avatar");
+        avatarFile.change(function (e) {
+          const imgURL = URL.createObjectURL(e.target.files[0]);
+          removeAvatar.css({ display: "block" });
+          $("avatarContainer").css({ height: "200px" });
+          $("#avatarPreview").attr("src", imgURL);
+          $("#avatarPreview").css({ display: "block" });
+
+          const formData = new FormData();
+
+          formData.append("file", e.target.files[0]);
+
+          $.ajax({
+            url: "/upload/image",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              const uploadedImageUrl = response.url;
+              if (uploadedImageUrl) {
+                const name = uploadedImageUrl.split("upload/")[1];
+                if (name) {
+                  $("#hiddenAvatar").val(name);
+                  $("#avatarPreview").attr("src", uploadedImageUrl);
+                }
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("Image upload failed:", error);
+            },
+          });
+        });
+      });
+      removeAvatar.click(function () {
+        $("#avatar").val("");
+        $("#avatarPreview").css({ display: "none" });
+        removeAvatar.css({ display: "none" });
+      });
+    </script>
   </body>
 </html>

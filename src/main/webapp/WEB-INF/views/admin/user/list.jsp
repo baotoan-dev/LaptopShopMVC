@@ -53,9 +53,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 <thead>
                   <tr>
                     <th>Id</th>
-                    <th>fullName</th>
+                    <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Role</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -66,6 +67,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                       <td>${user.fullName}</td>
                       <td>${user.email}</td>
                       <td>${user.phone}</td>
+                      <td>${user.role.name}</td>
                       <td>
                         <a href="/admin/user/detail/${user.id}" class="btn btn-warning">View</a>
                         <a href="/admin/user/edit/${user.id}" class="btn btn-info">Edit</a>

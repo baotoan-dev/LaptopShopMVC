@@ -43,7 +43,7 @@ uri="http://www.springframework.org/tags/form" %>
               <li class="breadcrumb-item active">Users</li>
             </ol>
             <div class="d-flex justify-content-center align-items-center">
-              <div class="card mt-5 w-100">
+              <div class="card w-100">
                 <div class="card-header">
                 <h3>Detail User</h3>
                 </div>
@@ -65,6 +65,10 @@ uri="http://www.springframework.org/tags/form" %>
                         <div class="form-group">
                             <label for="address">Address</label>
                             <input type="text" class="form-control" id="address" value="${user.address}" readonly />
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <input type="text" class="form-control" id="role" value="${user.role.name}" readonly />
                         </div>
                     </div>
                     <div class="col-12 mt-3">
