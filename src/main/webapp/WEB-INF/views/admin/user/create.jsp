@@ -143,7 +143,6 @@ uri="http://www.springframework.org/tags/form" %>
                       </div>
                     </div>
                   </div>
-
                   <div class="mb-3 d-flex justify-content-between gap-2">
                     <a href="/admin/user" class="btn btn-secondary col-6"
                       >Cancel</a
@@ -189,6 +188,7 @@ uri="http://www.springframework.org/tags/form" %>
             contentType: false,
             success: function (response) {
               const uploadedImageUrl = response.url;
+              console.log("uploadedImageUrl", uploadedImageUrl);
               if (uploadedImageUrl) {
                 const name = uploadedImageUrl.split("upload/")[1];
                 if (name) {

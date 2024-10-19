@@ -1,6 +1,6 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="form"
-uri="http://www.springframework.org/tags/form" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -18,6 +18,8 @@ uri="http://www.springframework.org/tags/form" %>
       src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
       crossorigin="anonymous"
     ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
     <style>
       body {
         background-color: #f8f9fa;
@@ -38,18 +40,10 @@ uri="http://www.springframework.org/tags/form" %>
         <main>
           <div class="container-fluid px-4">
             <h1 class="mt-4">Manage Users</h1>
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-              <li class="breadcrumb-item active">Users</li>
-            </ol>
             <div class="d-flex justify-content-center align-items-center">
               <div class="form-container col-12 col-md-6">
                 <h1 class="text-center">Edit User</h1>
-                <form:form
-                  action="/admin/user/update/${user.id}"
-                  method="post"
-                  modelAttribute="user"
-                >
+                <form:form action="/admin/user/update/${user.id}" method="post" modelAttribute="user">
                   <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <form:input
@@ -96,12 +90,60 @@ uri="http://www.springframework.org/tags/form" %>
                     />
                   </div>
                   <div class="mb-3 d-flex justify-content-between gap-2">
-                    <a href="/admin/user" class="btn btn-secondary col-6"
-                      >Cancel</a
-                    >
-                    <button type="submit" class="btn btn-primary col-6">
-                      Update
-                    </button>
+                    <div class="col-6">
+                      <label for="role" class="form-label">Role</label>
+                      <form:select
+                        class="form-select col-6"
+                        id="role"
+                        path="role"
+                      >
+                        <form:option value="USER" label="User" />
+                        <form:option value="ADMIN" label="Admin" />
+                      </form:select>
+                    </div>
+                    <div class="col-6">
+                      <label for="avatar" class="form-label"
+                      id="avatarLabel"
+                      <c:if test="${not empty user.avatar}">style="display:none;"</c:if>
+                      >
+                        Avatar
+                      </label>
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="avatar"
+                        accept=".jpg, .jpeg, .png"
+                        <c:if test="${not empty user.avatar}">style="display:none;"</c:if>
+                      />
+                      <small id="small-note" class="text-muted mt-2" <c:if test="${not empty user.avatar}">style="display:none;"</c:if>>
+                        Only .jpg, .jpeg, .png files are allowed
+                      </small>
+                    </div>
+                    <form:hidden path="avatar" id="hiddenAvatar" value="${user.avatar}" />
+                  </div>
+                  <div class="col-12 mb-3">
+                    <div style="width: 200px; position: relative" id="avatarContainer">
+                        <img
+                          style="width: 100%; height: 100%"
+                          alt="avatar preview"
+                          id="avatarPreview"
+                          src="${user.avatar}"
+                        />
+                        <div
+                          id="removeAvatar"
+                          class="btn btn-danger"
+                          style="position: absolute; top: 5px; right: 5px; border-radius: 50%; opacity: 0.8;"
+                          onclick="removeAvatar()"
+                          <c:if test="${empty user.avatar}">style="display:none;"</c:if>
+                        >
+                          X
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="mb-3 d-flex justify-content-between gap-2">
+                    <a href="/admin/user" class="btn btn-secondary col-6">Cancel</a>
+                    <button type="submit" class="btn btn-primary col-6">Update</button>
                   </div>
                 </form:form>
               </div>
@@ -111,10 +153,54 @@ uri="http://www.springframework.org/tags/form" %>
         <jsp:include page="../layout/footer.jsp" />
       </div>
     </div>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="/js/scripts.js"></script>
+
+    <script>
+      $(document).ready(() => {
+        const avatarFile = $("#avatar");
+        avatarFile.change(function (e) {
+          const removeAvatar = $("#removeAvatar");
+          const imgURL = URL.createObjectURL(e.target.files[0]);
+          removeAvatar.css({ display: "block" });
+          $("avatarContainer").css({ height: "200px" });
+          $("#avatarPreview").attr("src", imgURL);
+          $("#avatarPreview").css({ display: "block" });
+
+          const formData = new FormData();
+
+          formData.append("file", e.target.files[0]);
+
+          $.ajax({
+            url: "/upload/image",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              const uploadedImageUrl = response.url;
+              console.log('uploadedImageUrl', uploadedImageUrl);
+              if (uploadedImageUrl) {
+                const name = uploadedImageUrl.split("upload/")[1];
+                if (name) {
+                  $("#hiddenAvatar").val(name);
+                  $("#avatarPreview").attr("src", uploadedImageUrl);
+                }
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("Image upload failed:", error);
+            },
+          });
+        });
+      });
+      function removeAvatar() {
+        document.getElementById("avatarPreview").style.display = "none";
+        document.getElementById("removeAvatar").style.display = "none";
+        document.getElementById("avatar").style.display = "block";
+        document.getElementById("avatarLabel").style.display = "block";
+        document.getElementById("small-note").style.display = "block";
+        document.getElementById("hiddenAvatar").value = "";
+        document.getElementById("avatar").value = "";
+      }
+    </script>
   </body>
 </html>

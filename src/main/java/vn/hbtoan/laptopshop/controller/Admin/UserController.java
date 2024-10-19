@@ -7,16 +7,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hbtoan.laptopshop.domain.User;
 import vn.hbtoan.laptopshop.dto.CreateUserDTO;
+import vn.hbtoan.laptopshop.dto.UpdateUserDTO;
 import vn.hbtoan.laptopshop.service.UserService;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 
 
 @Controller
 public class UserController {
 
-    private UserService userService;        
+    private UserService userService;  
+    
+    @Value("${PREFIX_CLOUDINARY}")
+    private String cloudinaryPrefixUrl;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -47,7 +52,6 @@ public class UserController {
     @RequestMapping(value = "/admin/user/update/{id}", method=RequestMethod.POST)
     public String requestMethodUpdate(Model model, @ModelAttribute User user, @PathVariable("id") Long id) {
         try {
-            System.out.println("ID: " + id);
             User newUser = this.userService.update(user, id);
             
             if (newUser != null) {
@@ -60,6 +64,7 @@ public class UserController {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
+    
 
     @RequestMapping("/admin/user/delete/{id}")
     public String userDeletePage(Model model, @PathVariable("id") Long id) {
@@ -97,7 +102,9 @@ public class UserController {
     @RequestMapping("/admin/user/edit/{id}")
     public String userEditPage(Model model, @PathVariable("id") Long id) {
         User user = this.userService.findById(id);
-        model.addAttribute("user", user);
+        user.setAvatar(cloudinaryPrefixUrl + user.getAvatar());
+        UpdateUserDTO updateUserDTO = UpdateUserDTO.fromUser(user);
+        model.addAttribute("user", updateUserDTO);
         return "admin/user/edit";
     }
 }

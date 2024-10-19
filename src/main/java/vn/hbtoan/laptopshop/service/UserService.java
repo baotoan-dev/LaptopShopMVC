@@ -93,10 +93,39 @@ public class UserService {
             User userUpdate = this.findById(id);
 
             if (userUpdate != null) {
+
+                String roleName = user.getRole().getName();
+
+                if (roleName == null || roleName.isEmpty()) {
+                    throw new RuntimeException("Role is required");
+                }
+    
+                Role role = this.roleService.findByName(roleName).get();
+    
+                System.out.println(role);
+                if (role == null) {
+                    throw new RuntimeException("Role is not found");
+                }
+    
+                String password = user.getPassword();
+    
+                if (password == null || password.isEmpty()) {
+                    throw new RuntimeException("Password is required");
+                }
+
+                String encodePassword = this.bCryptPasswordEncoder.encode(password);
+    
+                if (encodePassword == null || encodePassword.isEmpty()) {
+                    throw new RuntimeException("Password is not encoded");
+                }
+
                 userUpdate.setEmail(user.getEmail());
                 userUpdate.setFullName(user.getFullName());
                 userUpdate.setPhone(user.getPhone());
                 userUpdate.setAddress(user.getAddress());
+                userUpdate.setPassword(encodePassword);
+                userUpdate.setAvatar(user.getAvatar());
+                userUpdate.setRole(role);
 
                 return this.userRepository.save(userUpdate);
             }
