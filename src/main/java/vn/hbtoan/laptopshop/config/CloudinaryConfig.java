@@ -1,6 +1,8 @@
 package vn.hbtoan.laptopshop.config;
 
 import com.cloudinary.Cloudinary;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,13 +11,22 @@ import java.util.Map;
 
 @Configuration
 public class CloudinaryConfig  {
+
+    @Value("${CLOUD_NAME}")
+    private String cloudName;
+
+    @Value("${API_KEY}")
+    private String apiKey;
+
+    @Value("${API_SECRET}")
+    private String apiSecret;
     
     @Bean
     public Cloudinary cloudinary() {
         Map<String, String> config = new HashMap<>();
-        config.put("cloud_name", "ddwjnjssj");
-        config.put("api_key", "928543254767848");  
-        config.put("api_secret", "w8JEy_kZ8uyV99aHKnUZPI7NSiQ");  
+        config.put("cloud_name", cloudName);
+        config.put("api_key", apiKey); 
+        config.put("api_secret", apiSecret);
         return new Cloudinary(config);
     }
 }

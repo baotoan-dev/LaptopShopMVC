@@ -49,23 +49,27 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/admin/user/update/{id}", method=RequestMethod.POST)
-    public String requestMethodUpdate(Model model, @ModelAttribute User user, @PathVariable("id") Long id) {
-        try {
-            User newUser = this.userService.update(user, id);
+    @RequestMapping(value = "/admin/user/update/{id}", method = RequestMethod.POST)
+    public String requestMethodUpdate(Model model, @ModelAttribute UpdateUserDTO updateUserDTO, @PathVariable("id") Long id) {
+        try {    
+            User updatedUser = this.userService.update(updateUserDTO, id);
             
-            if (newUser != null) {
+            if (updatedUser != null) {
                 return "redirect:/admin/user";
             } else {
-                return "redirect:/admin/user/edit/" + user.getId();
+                model.addAttribute("errorMessage", "Update failed. Please try again.");
+                return "redirect:/admin/user/edit/" + id;
             }
         } catch (Exception e) {
-            // TODO: handle exception
-            throw new RuntimeException("Error: " + e.getMessage());
+            System.err.println("Error occurred during user update: " + e.getMessage());
+            e.printStackTrace();
+            
+            model.addAttribute("errorMessage", "An error occurred while updating the user: " + e.getMessage());
+            
+            return "redirect:/admin/user/edit/" + id;
         }
     }
     
-
     @RequestMapping("/admin/user/delete/{id}")
     public String userDeletePage(Model model, @PathVariable("id") Long id) {
         try {
@@ -102,7 +106,6 @@ public class UserController {
     @RequestMapping("/admin/user/edit/{id}")
     public String userEditPage(Model model, @PathVariable("id") Long id) {
         User user = this.userService.findById(id);
-        user.setAvatar(cloudinaryPrefixUrl + user.getAvatar());
         UpdateUserDTO updateUserDTO = UpdateUserDTO.fromUser(user);
         model.addAttribute("user", updateUserDTO);
         return "admin/user/edit";

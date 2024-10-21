@@ -14,6 +14,8 @@ import lombok.Setter;
 import lombok.ToString;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -31,5 +33,6 @@ public class Role {
     private String description;
 
     @OneToMany(mappedBy = "role")
+    @JsonIgnore
     private List<User> users;
 }

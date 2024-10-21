@@ -72,7 +72,7 @@
                     />
                   </div>
                   <div class="mb-3">
-                    <label for="fullName" class="form-label">fullName</label>
+                    <label for="fullName" class="form-label">Full Name</label>
                     <form:input
                       class="form-control"
                       id="fullName"
@@ -96,6 +96,7 @@
                         class="form-select col-6"
                         id="role"
                         path="role"
+                        value="${user.role}"
                       >
                         <form:option value="USER" label="User" />
                         <form:option value="ADMIN" label="Admin" />
@@ -143,7 +144,7 @@
 
                   <div class="mb-3 d-flex justify-content-between gap-2">
                     <a href="/admin/user" class="btn btn-secondary col-6">Cancel</a>
-                    <button type="submit" class="btn btn-primary col-6">Update</button>
+                    <button type="submit" class="btn btn-primary col-6" id="updateBtn">Update</button>
                   </div>
                 </form:form>
               </div>
@@ -157,41 +158,58 @@
     <script>
       $(document).ready(() => {
         const avatarFile = $("#avatar");
+        const updateBtn = $("#updateBtn");
+    
         avatarFile.change(function (e) {
+          const file = e.target.files[0];
           const removeAvatar = $("#removeAvatar");
-          const imgURL = URL.createObjectURL(e.target.files[0]);
-          removeAvatar.css({ display: "block" });
-          $("avatarContainer").css({ height: "200px" });
-          $("#avatarPreview").attr("src", imgURL);
-          $("#avatarPreview").css({ display: "block" });
-
-          const formData = new FormData();
-
-          formData.append("file", e.target.files[0]);
-
-          $.ajax({
-            url: "/upload/image",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-              const uploadedImageUrl = response.url;
-              console.log('uploadedImageUrl', uploadedImageUrl);
-              if (uploadedImageUrl) {
-                const name = uploadedImageUrl.split("upload/")[1];
-                if (name) {
-                  $("#hiddenAvatar").val(name);
+    
+          if (file) {
+            const imgURL = URL.createObjectURL(file);
+    
+            updateBtn.prop("disabled", true);
+    
+            removeAvatar.css({ display: "block" });
+            $("#avatarContainer").css({ height: "200px" });
+            $("#avatarPreview").attr("src", imgURL).css({ display: "block" });
+    
+            const formData = new FormData();
+            formData.append("file", file);
+    
+            $.ajax({
+              url: "/upload/image",
+              type: "POST",
+              data: formData,
+              processData: false, 
+              contentType: false, 
+              beforeSend: function () {
+                updateBtn.text("Uploading...");
+              },
+              success: function (response) {
+                const uploadedImageUrl = response.url;
+                if (uploadedImageUrl) {
+                  $("#hiddenAvatar").val(uploadedImageUrl);
                   $("#avatarPreview").attr("src", uploadedImageUrl);
+    
+                  updateBtn.prop("disabled", false);
+                  updateBtn.text("Update");
                 }
-              }
-            },
-            error: function (xhr, status, error) {
-              console.error("Image upload failed:", error);
-            },
-          });
+              },
+              error: function (xhr, status, error) {
+                console.error("Image upload failed:", error);
+                removeAvatar.css({ display: "none" });
+                $("#avatarPreview").css({ display: "none" });
+                $("#avatar").val("");
+    
+                // Thông báo lỗi và vô hiệu hóa nút "Update"
+                alert("Image upload failed. Please try again.");
+                updateBtn.prop("disabled", true); 
+              },
+            });
+          }
         });
       });
+    
       function removeAvatar() {
         document.getElementById("avatarPreview").style.display = "none";
         document.getElementById("removeAvatar").style.display = "none";
@@ -202,5 +220,7 @@
         document.getElementById("avatar").value = "";
       }
     </script>
+    
+    
   </body>
 </html>

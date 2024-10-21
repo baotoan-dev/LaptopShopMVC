@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import vn.hbtoan.laptopshop.domain.User;
 import vn.hbtoan.laptopshop.dto.CreateUserDTO;
+import vn.hbtoan.laptopshop.dto.UpdateUserDTO;
 import vn.hbtoan.laptopshop.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
@@ -24,52 +25,61 @@ public class UserService {
 
     public User save(CreateUserDTO createUserDTO) {
         try {
-            boolean checkUser = this.userRepository.existsByEmail(createUserDTO.getEmail());
-
-            if (checkUser) {
-                throw new RuntimeException("Email is already in use");
-            }
-
-            String roleName = createUserDTO.getRole();
-
-            if (roleName == null || roleName.isEmpty()) {
-                throw new RuntimeException("Role is required");
-            }
-
-            Role role = this.roleService.findByName(roleName).get();
-
-            if (role == null) {
-                throw new RuntimeException("Role is not found");
-            }
-
-            String password = createUserDTO.getPassword();
-
-            if (password == null || password.isEmpty()) {
-                throw new RuntimeException("Password is required");
-            }
-
-            String encodePassword = this.bCryptPasswordEncoder.encode(password);
-
-            if (encodePassword == null || encodePassword.isEmpty()) {
-                throw new RuntimeException("Password is not encoded");
-            }
-
-            User user = new User();
-            user.setEmail(createUserDTO.getEmail());
-            user.setFullName(createUserDTO.getFullName());
-            user.setPhone(createUserDTO.getPhone());
-            user.setAddress(createUserDTO.getAddress());
-            user.setPassword(encodePassword);
-            user.setAvatar(createUserDTO.getAvatar());
-            user.setRole(role);
-
+            validateUserCreation(createUserDTO);
+    
+            Role role = findRole(createUserDTO.getRole());
+            
+            String encodedPassword = encodePassword(createUserDTO.getPassword());
+    
+            User user = buildUser(createUserDTO, role, encodedPassword);
+    
             return this.userRepository.save(user);
         } catch (Exception e) {
-            // TODO: handle exception
-            throw e;
+            throw new RuntimeException("Failed to create user: " + e.getMessage(), e);
         }
     }
-
+    
+    private void validateUserCreation(CreateUserDTO createUserDTO) {
+        if (this.userRepository.existsByEmail(createUserDTO.getEmail())) {
+            throw new IllegalArgumentException("Email is already in use");
+        }
+    
+        if (createUserDTO.getRole() == null || createUserDTO.getRole().isEmpty()) {
+            throw new IllegalArgumentException("Role is required");
+        }
+    
+        if (createUserDTO.getPassword() == null || createUserDTO.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+    }
+    
+    private Role findRole(String roleName) {
+        return this.roleService.findByName(roleName)
+            .orElseThrow(() -> new IllegalArgumentException("Role is not found"));
+    }
+    
+    private String encodePassword(String password) {
+        String encodedPassword = this.bCryptPasswordEncoder.encode(password);
+    
+        if (encodedPassword == null || encodedPassword.isEmpty()) {
+            throw new IllegalStateException("Password encoding failed");
+        }
+    
+        return encodedPassword;
+    }
+    
+    private User buildUser(CreateUserDTO createUserDTO, Role role, String encodedPassword) {
+        User user = new User();
+        user.setEmail(createUserDTO.getEmail());
+        user.setFullName(createUserDTO.getFullName());
+        user.setPhone(createUserDTO.getPhone());
+        user.setAddress(createUserDTO.getAddress());
+        user.setPassword(encodedPassword);
+        user.setAvatar(createUserDTO.getAvatar());
+        user.setRole(role);
+        return user;
+    }
+    
     public List<User> findAll() {
         return this.userRepository.findAll();
     }
@@ -88,54 +98,76 @@ public class UserService {
         return null;
     }
 
-    public User update(User user, Long id) {
+    public User update(UpdateUserDTO updateUserDTO, Long id) {
         try {
             User userUpdate = this.findById(id);
-
+    
             if (userUpdate != null) {
-
-                String roleName = user.getRole().getName();
-
+                boolean isModified = false;
+    
+                String roleName = updateUserDTO.getRole();
                 if (roleName == null || roleName.isEmpty()) {
                     throw new RuntimeException("Role is required");
                 }
     
-                Role role = this.roleService.findByName(roleName).get();
+                Role role = this.roleService.findByName(roleName).orElseThrow(() -> new RuntimeException("Role is not found"));
     
-                System.out.println(role);
-                if (role == null) {
-                    throw new RuntimeException("Role is not found");
+                if (!userUpdate.getRole().equals(role)) {
+                    userUpdate.setRole(role);
+                    isModified = true;
                 }
     
-                String password = user.getPassword();
-    
+                String password = updateUserDTO.getPassword();
                 if (password == null || password.isEmpty()) {
                     throw new RuntimeException("Password is required");
                 }
-
-                String encodePassword = this.bCryptPasswordEncoder.encode(password);
     
-                if (encodePassword == null || encodePassword.isEmpty()) {
-                    throw new RuntimeException("Password is not encoded");
+                String encodePassword = this.bCryptPasswordEncoder.encode(password);
+                if (!userUpdate.getPassword().equals(encodePassword)) {
+                    userUpdate.setPassword(encodePassword);
+                    isModified = true;
                 }
-
-                userUpdate.setEmail(user.getEmail());
-                userUpdate.setFullName(user.getFullName());
-                userUpdate.setPhone(user.getPhone());
-                userUpdate.setAddress(user.getAddress());
-                userUpdate.setPassword(encodePassword);
-                userUpdate.setAvatar(user.getAvatar());
-                userUpdate.setRole(role);
-
-                return this.userRepository.save(userUpdate);
+    
+                if (!userUpdate.getEmail().equals(updateUserDTO.getEmail())) {
+                    userUpdate.setEmail(updateUserDTO.getEmail());
+                    isModified = true;
+                }
+    
+                if (!userUpdate.getFullName().equals(updateUserDTO.getFullName())) {
+                    userUpdate.setFullName(updateUserDTO.getFullName());
+                    isModified = true;
+                }
+    
+                if (!userUpdate.getPhone().equals(updateUserDTO.getPhone())) {
+                    userUpdate.setPhone(updateUserDTO.getPhone());
+                    isModified = true;
+                }
+    
+                if (!userUpdate.getAddress().equals(updateUserDTO.getAddress())) {
+                    userUpdate.setAddress(updateUserDTO.getAddress());
+                    isModified = true;
+                }
+    
+                if (!userUpdate.getAvatar().equals(updateUserDTO.getAvatar())) {
+                    userUpdate.setAvatar(updateUserDTO.getAvatar());
+                    isModified = true;
+                }
+    
+                if (isModified) {
+                    return this.userRepository.save(userUpdate);
+                } else {
+                    System.out.println("No changes detected");
+                    return userUpdate;
+                }
             }
-
+    
             return null;
-
+    
         } catch (Exception e) {
-            throw e;
+            throw new RuntimeException("Error updating user: " + e.getMessage(), e);
         }
     }
+    
 
     public void delete(Long id) {
         try {

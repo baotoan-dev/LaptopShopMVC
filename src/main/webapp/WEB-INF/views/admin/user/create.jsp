@@ -76,7 +76,7 @@ uri="http://www.springframework.org/tags/form" %>
                     <form:input class="form-control" id="phone" path="phone" />
                   </div>
                   <div class="mb-3">
-                    <label for="fullName" class="form-label">FullName</label>
+                    <label for="fullName" class="form-label">Full Name</label>
                     <form:input
                       class="form-control"
                       id="fullName"
@@ -147,8 +147,13 @@ uri="http://www.springframework.org/tags/form" %>
                     <a href="/admin/user" class="btn btn-secondary col-6"
                       >Cancel</a
                     >
-                    <button type="submit" class="btn btn-primary col-6">
-                      Create
+                    <button
+                      type="submit"
+                      class="btn btn-primary col-6"
+                      id="updateBtn"
+                      disabled
+                    >
+                      Update
                     </button>
                   </div>
                 </form:form>
@@ -167,46 +172,56 @@ uri="http://www.springframework.org/tags/form" %>
 
     <script>
       const removeAvatar = $("#removeAvatar");
+      const btnUpdate = $("#updateBtn");
+
       $(document).ready(() => {
         const avatarFile = $("#avatar");
+
         avatarFile.change(function (e) {
-          const imgURL = URL.createObjectURL(e.target.files[0]);
-          removeAvatar.css({ display: "block" });
-          $("avatarContainer").css({ height: "200px" });
-          $("#avatarPreview").attr("src", imgURL);
-          $("#avatarPreview").css({ display: "block" });
+          const file = e.target.files[0];
 
-          const formData = new FormData();
+          btnUpdate.prop("disabled", true);
+          if (file) {
+            const imgURL = URL.createObjectURL(file);
 
-          formData.append("file", e.target.files[0]);
+            removeAvatar.css({ display: "block" });
+            $("#avatarContainer").css({ height: "200px" });
+            $("#avatarPreview").attr("src", imgURL).css({ display: "block" });
 
-          $.ajax({
-            url: "/upload/image",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-              const uploadedImageUrl = response.url;
-              console.log("uploadedImageUrl", uploadedImageUrl);
-              if (uploadedImageUrl) {
-                const name = uploadedImageUrl.split("upload/")[1];
-                if (name) {
-                  $("#hiddenAvatar").val(name);
+            const formData = new FormData();
+            formData.append("file", file);
+
+            $.ajax({
+              url: "/upload/image",
+              type: "POST",
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function (response) {
+                const uploadedImageUrl = response.url;
+                if (uploadedImageUrl) {
+                  btnUpdate.prop("disabled", false);
+                  $("#hiddenAvatar").val(uploadedImageUrl);
                   $("#avatarPreview").attr("src", uploadedImageUrl);
                 }
-              }
-            },
-            error: function (xhr, status, error) {
-              console.error("Image upload failed:", error);
-            },
-          });
+
+                URL.revokeObjectURL(imgURL);
+              },
+              error: function (xhr, status, error) {
+                btnUpdate.prop("disabled", true);
+                console.error("Image upload failed:", error);
+                alert("Image upload failed. Please try again.");
+              },
+            });
+          }
         });
-      });
-      removeAvatar.click(function () {
-        $("#avatar").val("");
-        $("#avatarPreview").css({ display: "none" });
-        removeAvatar.css({ display: "none" });
+
+        removeAvatar.click(function () {
+          $("#avatar").val("");
+          $("#avatarPreview").css({ display: "none" });
+          removeAvatar.css({ display: "none" });
+          $("#hiddenAvatar").val("");
+        });
       });
     </script>
   </body>
