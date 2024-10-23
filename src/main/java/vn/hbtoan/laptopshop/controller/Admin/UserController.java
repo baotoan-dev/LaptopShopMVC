@@ -2,6 +2,8 @@ package vn.hbtoan.laptopshop.controller.Admin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,9 @@ import vn.hbtoan.laptopshop.dto.UpdateUserDTO;
 import vn.hbtoan.laptopshop.service.UserService;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.validation.Valid;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -34,8 +39,18 @@ public class UserController {
     }
 
     @RequestMapping(value = "/admin/user/save", method=RequestMethod.POST)
-    public String requestMethodName(Model model, @ModelAttribute("userDTO") CreateUserDTO createUserDTO) {
+    public String requestMethodName(
+        Model model,
+        @Valid @ModelAttribute("userDTO") CreateUserDTO createUserDTO,
+        BindingResult bindingResult
+    ) {
         try {
+            //validate user
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors ) {
+                System.out.println (error.getObjectName() + " - " + error.getDefaultMessage());
+            }
+
             User newUser = this.userService.save(createUserDTO);
             
             if (newUser != null) {

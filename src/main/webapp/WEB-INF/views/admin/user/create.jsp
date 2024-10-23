@@ -151,9 +151,8 @@ uri="http://www.springframework.org/tags/form" %>
                       type="submit"
                       class="btn btn-primary col-6"
                       id="updateBtn"
-                      disabled
                     >
-                      Update
+                      Create
                     </button>
                   </div>
                 </form:form>
