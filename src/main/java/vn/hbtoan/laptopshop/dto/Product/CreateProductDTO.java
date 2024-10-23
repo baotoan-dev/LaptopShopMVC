@@ -1,5 +1,6 @@
 package vn.hbtoan.laptopshop.dto.Product;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -13,7 +14,7 @@ public class CreateProductDTO {
     private String name;
 
     @NotNull(message = "Price is required")
-    @Size(min = 1, message = "Price must be a number")
+    @Min(value = 0, message = "Price must be greater than 0")
     private double price;
 
     private String image;

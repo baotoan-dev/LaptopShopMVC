@@ -46,30 +46,54 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     <thead>
                       <tr>
                         <th>ID</th>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Price</th>
-                        <th>Factory</th>
+                        <th>Description</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <!-- <c:forEach var="user" items="${users1}">
-                                                    <tr>
-                                                        <th>${user.id}</th>
-                                                        <td>${user.email}</td>
-                                                        <td>${user.fullName}</td>
-                                                        <td>${user.role.name}</td>
-                                                        <td>
-                                                            <a href="/admin/user/${user.id}"
-                                                                class="btn btn-success">View</a>
-                                                            <a href="/admin/user/update/${user.id}"
-                                                                class="btn btn-warning  mx-2">Update</a>
-                                                            <a href="/admin/user/delete/${user.id}"
-                                                                class="btn btn-danger">Delete</a>
-                                                        </td>
-                                                    </tr>
-
-                                                </c:forEach> -->
+                      <c:forEach var="product" items="${products}">
+                        <tr>
+                          <th>${product.id}</th>
+                          <td>
+                            <c:choose>
+                              <c:when test="${not empty product.image}">
+                                <img
+                                  src="${product.image}"
+                                  alt="${product.name}"
+                                  width="100"
+                                  height="100"
+                                />
+                              </c:when>
+                              <c:otherwise>
+                                <p>No image available</p>
+                              </c:otherwise>
+                            </c:choose>
+                          </td>
+                          <td>${product.name}</td>
+                          <td>${product.price}</td>
+                          <td>${product.detailDesc}</td>
+                          <td>
+                            <a
+                              href="/admin/product/view/${product.id}"
+                              class="btn btn-success"
+                              >View</a
+                            >
+                            <a
+                              href="/admin/product/edit/${product.id}"
+                              class="btn btn-warning mx-2"
+                              >Update</a
+                            >
+                            <a
+                              href="/admin/product/delete/${product.id}"
+                              class="btn btn-danger"
+                              >Delete</a
+                            >
+                          </td>
+                        </tr>
+                      </c:forEach>
                     </tbody>
                   </table>
                 </div>
@@ -77,8 +101,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             </div>
           </div>
         </main>
-        <jsp:include page="../layout/footer.jsp" />
       </div>
+      <jsp:include page="../layout/footer.jsp" />
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

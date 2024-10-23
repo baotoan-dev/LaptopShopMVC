@@ -46,7 +46,6 @@ public class UserController {
         BindingResult bindingResult
     ) {
         try {
-<<<<<<< HEAD
             if (bindingResult.hasErrors()) {
                 List<FieldError> errors = bindingResult.getFieldErrors();
                 for (FieldError error : errors ) {
@@ -56,14 +55,6 @@ public class UserController {
                 return "/admin/user/create";
             }
     
-=======
-            //validate user
-            List<FieldError> errors = bindingResult.getFieldErrors();
-            for (FieldError error : errors ) {
-                System.out.println (error.getObjectName() + " - " + error.getDefaultMessage());
-            }
-
->>>>>>> f3897998ed7863f07d725a5f9d215b057011e11d
             User newUser = this.userService.save(createUserDTO);
     
             if (newUser != null) {

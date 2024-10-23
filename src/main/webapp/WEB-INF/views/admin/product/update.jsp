@@ -46,14 +46,14 @@ uri="http://www.springframework.org/tags/form" %>
             <div class="mt-5">
               <div class="row">
                 <div class="col-md-6 col-12 mx-auto max-w-700 bg-white p-5 shadow-sm border-radius-10 border min-w-300 max-h-500 overflow-auto">
-                  <h3>Create a product</h3>
+                  <h3>Edit a product</h3>
                   <hr />
                   <form:form
                     method="post"
                     action="/admin/product/save"
                     class="row"
                     enctype="multipart/form-data"
-                    modelAttribute="newProduct"
+                    modelAttribute="product"
                   >
                     <div class="mb-3 col-12 col-md-6">
                       <label class="form-label">Name:</label>
@@ -66,6 +66,7 @@ uri="http://www.springframework.org/tags/form" %>
                         type="text"
                         class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
                         path="name"
+                        value="${product.name}"
                       />
                     </div>
                     <div class="mb-3 col-12 col-md-6">
@@ -74,6 +75,7 @@ uri="http://www.springframework.org/tags/form" %>
                         type="number"
                         class="form-control"
                         path="price"
+                        value="${product.price}"
                       />
                     </div>
                     <div class="mb-3 col-12">
@@ -82,6 +84,7 @@ uri="http://www.springframework.org/tags/form" %>
                         type="text"
                         class="form-control"
                         path="detailDesc"
+                        value="${product.detailDesc}"
                       />
                     </div>
                     <div class="mb-3 col-12 col-md-6">
@@ -90,6 +93,7 @@ uri="http://www.springframework.org/tags/form" %>
                         type="text"
                         class="form-control"
                         path="shortDesc"
+                        value="${product.shortDesc}"
                       />
                     </div>
                     <div class="mb-3 col-12 col-md-6">
@@ -98,12 +102,13 @@ uri="http://www.springframework.org/tags/form" %>
                         type="number"
                         class="form-control"
                         path="quantity"
+                        value="${product.quantity}"
                       />
                     </div>
 
                     <div class="mb-3 col-12 col-md-6">
                       <label class="form-label">Factory:</label>
-                      <form:select class="form-select" path="factory">
+                      <form:select class="form-select" path="factory" value="${product.factory}">
                         <form:option value="APPLE">Apple (MacBook)</form:option>
                         <form:option value="ASUS">Asus</form:option>
                         <form:option value="LENOVO">Lenovo</form:option>
@@ -114,7 +119,7 @@ uri="http://www.springframework.org/tags/form" %>
                     </div>
                     <div class="mb-3 col-12 col-md-6">
                       <label class="form-label">Target:</label>
-                      <form:select class="form-select" path="target">
+                      <form:select class="form-select" path="target" value="${product.target}">
                         <form:option value="GAMING">Gaming</form:option>
                         <form:option value="SINHVIEN-VANPHONG"
                           >Sinh viên - Văn phòng
@@ -176,7 +181,7 @@ uri="http://www.springframework.org/tags/form" %>
                       </div>
                       <div class="col-12 mb-5">
                         <button type="submit" class="btn btn-primary createBtn">
-                          Create
+                          Update
                         </button>
                       </div>
                   </div>
@@ -186,7 +191,6 @@ uri="http://www.springframework.org/tags/form" %>
             </div>
           </div>
         </main>
-        <jsp:include page="../layout/footer.jsp" />
       </div>
     </div>
     <script
@@ -248,5 +252,6 @@ uri="http://www.springframework.org/tags/form" %>
         });
       });
     </script>
+    <jsp:include page="../layout/footer.jsp" />
   </body>
 </html>
