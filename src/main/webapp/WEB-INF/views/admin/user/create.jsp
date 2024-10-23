@@ -1,6 +1,8 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
+<%@ page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="form"
-uri="http://www.springframework.org/tags/form" %>
+uri="http://www.springframework.org/tags/form" %> <%@ taglib
+uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> <%@ taglib
+uri="http://www.springframework.org/tags" prefix="spring" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,7 +13,7 @@ uri="http://www.springframework.org/tags/form" %>
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <meta name="description" content="Dự án laptopshop" />
-    <meta name="author" content="Hỏi Dân IT" />
+    <meta name="author" content="" />
     <title>Dashboard</title>
     <link href="/css/styles.css" rel="stylesheet" />
     <script
@@ -27,6 +29,11 @@ uri="http://www.springframework.org/tags/form" %>
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .text-danger {
+        color: red;
+        font-size: 0.8rem;
+        font-weight: 500;
       }
     </style>
   </head>
@@ -46,43 +53,72 @@ uri="http://www.springframework.org/tags/form" %>
             <div class="d-flex justify-content-center align-items-center">
               <div class="form-container col-12 col-md-6">
                 <h1 class="text-center">Create User</h1>
+
                 <form:form
                   action="/admin/user/save"
                   method="post"
-                  modelAttribute="user"
+                  modelAttribute="userDTO"
                 >
                   <div class="mb-3 d-flex justify-content-between gap-2">
                     <div class="col-6">
                       <label for="email" class="form-label">Email</label>
+
+                      <c:set var="errorEmail">
+                        <form:errors path="email" />
+                      </c:set>
+
                       <form:input
-                        class="form-control"
+                        class="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
                         id="email"
                         path="email"
-                        required="required"
                       />
+                      <form:errors path="email" cssClass="text-danger" />
                     </div>
                     <div class="col-6">
                       <label for="password" class="form-label">Password</label>
+
+                      <c:set var="errorPassword">
+                        <form:errors path="password" />
+                      </c:set>
                       <form:password
-                        class="form-control"
+                        class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
                         id="password"
                         path="password"
-                        required="required"
                       />
+                      <form:errors path="password" cssClass="text-danger" />
                     </div>
                   </div>
+
                   <div class="mb-3">
                     <label for="phone" class="form-label">Phone</label>
-                    <form:input class="form-control" id="phone" path="phone" />
+
+                    <c:set var="errorPhone">
+                      <form:errors path="phone" />
+                    </c:set>
+
+                    <form:input
+                      class="form-control ${not empty errorPhone ? 'is-invalid' : ''}"
+                      id="phone"
+                      path="phone"
+                    />
+                    <form:errors path="phone" cssClass="text-danger" />
                   </div>
+
                   <div class="mb-3">
                     <label for="fullName" class="form-label">Full Name</label>
+
+                    <c:set var="errorFullName">
+                      <form:errors path="fullName" />
+                    </c:set>
+
                     <form:input
-                      class="form-control"
+                      class="form-control ${not empty errorFullName ? 'is-invalid' : ''}"
                       id="fullName"
                       path="fullName"
                     />
+                    <form:errors path="fullName" cssClass="text-danger" />
                   </div>
+
                   <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
                     <form:input
@@ -90,7 +126,9 @@ uri="http://www.springframework.org/tags/form" %>
                       id="address"
                       path="address"
                     />
+                    <form:errors path="address" cssClass="text-danger" />
                   </div>
+
                   <div class="mb-3 d-flex justify-content-between gap-2">
                     <div class="col-6">
                       <label for="role" class="form-label">Role</label>
@@ -98,23 +136,23 @@ uri="http://www.springframework.org/tags/form" %>
                         <form:option value="USER" label="User" />
                         <form:option value="ADMIN" label="Admin" />
                       </form:select>
+                      <form:errors path="role" cssClass="text-danger" />
                     </div>
                     <div class="col-6">
                       <label for="avatar" class="form-label">Avatar</label>
-                      <!-- select -->
                       <input
                         type="file"
                         class="form-control"
                         id="avatar"
                         accept=".jpg, .jpeg, .png"
                       />
-
-                      <small class="text-muted mt-2"
-                        >Only .jpg, .jpeg, .png files are allowed</small
-                      >
+                      <small class="text-muted mt-2">
+                        Only .jpg, .jpeg, .png files are allowed
+                      </small>
                     </div>
                     <form:hidden path="avatar" id="hiddenAvatar" />
                   </div>
+
                   <div class="col-12 mb-3">
                     <div
                       style="width: 200px; position: relative"
@@ -143,6 +181,7 @@ uri="http://www.springframework.org/tags/form" %>
                       </div>
                     </div>
                   </div>
+
                   <div class="mb-3 d-flex justify-content-between gap-2">
                     <a href="/admin/user" class="btn btn-secondary col-6"
                       >Cancel</a
@@ -151,9 +190,8 @@ uri="http://www.springframework.org/tags/form" %>
                       type="submit"
                       class="btn btn-primary col-6"
                       id="updateBtn"
-                      disabled
                     >
-                      Update
+                      Create
                     </button>
                   </div>
                 </form:form>

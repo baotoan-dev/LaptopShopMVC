@@ -1,4 +1,4 @@
-package vn.hbtoan.laptopshop.repository;
+package vn.hbtoan.laptopshop.repository.Role;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;

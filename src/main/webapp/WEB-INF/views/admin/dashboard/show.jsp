@@ -11,8 +11,8 @@ prefix="c"%>
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta name="description" content="Hỏi Dân IT - Dự án laptopshop" />
-    <meta name="author" content="Hỏi Dân IT" />
+    <meta name="description" content=" Dự án laptopshop" />
+    <meta name="author" content="" />
     <title>Dashboard</title>
     <link
       href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"

@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import vn.hbtoan.laptopshop.service.Image.ImageSerivce;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 import java.util.HashMap;
-
-import vn.hbtoan.laptopshop.service.ImageSerivce;
 
 @Controller
 @RequestMapping("/upload")

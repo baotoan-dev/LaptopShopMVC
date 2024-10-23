@@ -1,4 +1,4 @@
-package vn.hbtoan.laptopshop.service;
+package vn.hbtoan.laptopshop.service.Image;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

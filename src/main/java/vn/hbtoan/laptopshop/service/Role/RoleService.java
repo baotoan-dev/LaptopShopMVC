@@ -1,14 +1,15 @@
-package vn.hbtoan.laptopshop.service;
+package vn.hbtoan.laptopshop.service.Role;
 
-import vn.hbtoan.laptopshop.repository.RoleRepository;
 import vn.hbtoan.laptopshop.domain.Role;
+import vn.hbtoan.laptopshop.repository.Role.RoleRepository;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class RoleService {
-        private RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     public RoleService(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;

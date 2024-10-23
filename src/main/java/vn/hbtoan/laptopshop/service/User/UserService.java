@@ -1,12 +1,14 @@
-package vn.hbtoan.laptopshop.service;
+package vn.hbtoan.laptopshop.service.User;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import vn.hbtoan.laptopshop.domain.User;
-import vn.hbtoan.laptopshop.dto.CreateUserDTO;
-import vn.hbtoan.laptopshop.dto.UpdateUserDTO;
-import vn.hbtoan.laptopshop.repository.UserRepository;
+import vn.hbtoan.laptopshop.dto.User.CreateUserDTO;
+import vn.hbtoan.laptopshop.dto.User.UpdateUserDTO;
+import vn.hbtoan.laptopshop.repository.User.UserRepository;
+import vn.hbtoan.laptopshop.service.Role.RoleService;
+
 import java.util.List;
 import java.util.Optional;
 import vn.hbtoan.laptopshop.domain.Role;

@@ -1,4 +1,4 @@
-package vn.hbtoan.laptopshop.dto;
+package vn.hbtoan.laptopshop.dto.User;
 
 import lombok.Data;
 import vn.hbtoan.laptopshop.domain.User;
