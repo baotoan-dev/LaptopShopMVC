@@ -10,7 +10,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import jakarta.servlet.DispatcherType;
 import vn.hbtoan.laptopshop.service.CustomUserDetailsService;
 import vn.hbtoan.laptopshop.service.User.UserService;
 
@@ -36,5 +39,41 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder);
         // authProvider.setHideUserNotFoundExceptions(false);
         return authProvider;
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new CustomSuccessHandler();
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // v6. lamda
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD,
+                                DispatcherType.INCLUDE)
+                        .permitAll()
+                        .requestMatchers(
+                            "/", 
+                            "/login", 
+                            "product/**",
+                            "/register", 
+                            "/client/**", 
+                            "/css/**", 
+                            "/js/**", 
+                            "/images/**"
+                        )
+                        .permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login")
+                        .failureUrl("/login?error")
+                        .successHandler(successHandler())
+                        .permitAll());
+
+        return http.build();
     }
 }

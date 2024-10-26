@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
+import vn.hbtoan.laptopshop.domain.Product;
 import vn.hbtoan.laptopshop.dto.User.RegisterDTO;
+import vn.hbtoan.laptopshop.service.Product.ProductService;
 import vn.hbtoan.laptopshop.service.User.UserService;
 
 import org.springframework.ui.Model;
@@ -22,14 +24,23 @@ public class HomePageController {
     private final String REDIRECT_HOME = "redirect:/";
 
     private UserService userService;
+    private ProductService productService;
 
-    public HomePageController(UserService userService) {
+    public HomePageController(UserService userService, ProductService productService) {
         this.userService = userService;
+        this.productService = productService;
     }
     
     @RequestMapping("/")
-    public String homePage() {
+    public String homePage(Model model) {
+        List<Product> products = this.productService.getAll();
+        model.addAttribute("products", products);
         return HOME_PAGE;
+    }
+
+    @GetMapping("/login")
+    public String getLoginPage(Model model) {
+        return "client/auth/login";
     }
 
     @GetMapping("/register")
@@ -53,11 +64,5 @@ public class HomePageController {
         this.userService.registerDTOtoUser(registerDTO);
 
         return "redirect:/";
-    }
-
-    @GetMapping("/login")
-    public String getLoginPage(Model model) {
-
-        return "client/auth/login";
     }
 }

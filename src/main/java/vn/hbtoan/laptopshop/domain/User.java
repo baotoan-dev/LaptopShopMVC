@@ -52,6 +52,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private List<Order> orders;
     
 }
