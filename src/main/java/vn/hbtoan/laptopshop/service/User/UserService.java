@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import vn.hbtoan.laptopshop.domain.User;
 import vn.hbtoan.laptopshop.dto.User.CreateUserDTO;
+import vn.hbtoan.laptopshop.dto.User.RegisterDTO;
 import vn.hbtoan.laptopshop.dto.User.UpdateUserDTO;
 import vn.hbtoan.laptopshop.repository.User.UserRepository;
 import vn.hbtoan.laptopshop.service.Role.RoleService;
@@ -12,6 +13,7 @@ import vn.hbtoan.laptopshop.service.Role.RoleService;
 import java.util.List;
 import java.util.Optional;
 import vn.hbtoan.laptopshop.domain.Role;
+import org.modelmapper.ModelMapper;
 
 @Service
 public class UserService {
@@ -88,6 +90,10 @@ public class UserService {
 
     public List<User> findByEmail(String email) {
         return this.userRepository.findByEmailContaining(email);
+    }
+
+    public User findOneByEmail(String email) {
+        return this.userRepository.findByEmail(email);
     }
 
     public User findById(Long id) {
@@ -177,5 +183,26 @@ public class UserService {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public User registerDTOtoUser(RegisterDTO registerDTO) {
+        User user = new User();
+        
+        ModelMapper modelMapper = new ModelMapper();
+
+        user = modelMapper.map(registerDTO, User.class);
+
+        user.setRole(this.roleService.findByName("USER").get());
+
+        user.setFullName(registerDTO.getFirstName() + " " + registerDTO.getLastName());
+
+        // hash password
+        String encodedPassword = this.bCryptPasswordEncoder.encode(registerDTO.getPassword());
+
+        user.setPassword(encodedPassword);
+
+        this.userRepository.save(user);
+
+        return user;
     }
 }
