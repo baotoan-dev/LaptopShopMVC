@@ -41,6 +41,25 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     >
                   </div>
 
+                  <div>
+                    <!-- Search Form -->
+                    <form
+                      action="/admin/product"
+                      method="get"
+                      class="d-flex mt-3"
+                      id="searchForm"
+                    >
+                      <input
+                        type="text"
+                        name="keyword"
+                        class="form-control"
+                        placeholder="Search by name"
+                        id="keyword"
+                        value="${keyword}"
+                      />
+                    </form>
+                  </div>
+
                   <hr />
                   <table class="table table-bordered table-hover">
                     <thead>
@@ -96,6 +115,26 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                       </c:forEach>
                     </tbody>
                   </table>
+
+                  <!-- Pagination controls -->
+                  <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                      <c:forEach var="i" begin="1" end="${totalPages}">
+                        <li
+                          class="page-item ${i == currentPage ? 'active' : ''}"
+                        >
+                          <a
+                            class="page-link"
+                            href="?page=${i}&keyword=${keyword}"
+                            >${i}</a
+                          >
+                        </li>
+                      </c:forEach>
+                    </ul>
+                    <p class="text-center">
+                      Showing ${currentPage} of ${totalPages} pages
+                    </p>
+                  </nav>
                 </div>
               </div>
             </div>
@@ -109,5 +148,17 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       crossorigin="anonymous"
     ></script>
     <script src="/js/scripts.js"></script>
+    <script>
+      const keyword = document.getElementById("keyword");
+      const searchForm = document.getElementById("searchForm");
+
+      keyword.addEventListener("input", function () {
+        clearTimeout(this.delay);
+        this.delay = setTimeout(function () {
+          searchForm.submit();
+          keyword.focus();
+        }, 500);
+      });
+    </script>
   </body>
 </html>

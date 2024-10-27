@@ -1,4 +1,4 @@
-<%@ page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
+<%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core" %> <%@ taglib prefix="form"
 uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
@@ -10,102 +10,95 @@ uri="http://www.springframework.org/tags/form" %>
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
     <title>Login - Laptopshop</title>
     <link href="/css/styles.css" rel="stylesheet" />
     <script
       src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
       crossorigin="anonymous"
     ></script>
-    <style>
-      .bg-primary-custom {
-        background: linear-gradient(135deg, #007bff, #6c757d);
-        min-height: 100vh;
-      }
-      .card-custom {
-        border: none;
-        border-radius: 1rem;
-        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-      }
-      .form-control-custom {
-        height: calc(3rem + 2px);
-        border-radius: 0.5rem;
-        border: 1px solid #ddd;
-      }
-      .btn-primary-custom {
-        background: #007bff;
-        border: none;
-        font-size: 1rem;
-        padding: 0.75rem 1rem;
-        border-radius: 0.5rem;
-        transition: background 0.3s;
-      }
-      .btn-primary-custom:hover {
-        background: #0056b3;
-      }
-      .text-muted-custom {
-        color: #6c757d;
-        font-size: 0.9rem;
-      }
-    </style>
   </head>
 
-  <body class="bg-primary-custom">
+  <body class="bg-primary">
     <div id="layoutAuthentication">
       <div id="layoutAuthentication_content">
         <main>
           <div class="container">
             <div class="row justify-content-center">
               <div class="col-lg-5">
-                <div class="card card-custom shadow-lg border-0 mt-5">
-                  <div class="card-header text-center">
-                    <h3 class="text-uppercase font-weight-bold my-3">Login</h3>
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                  <div class="card-header">
+                    <h3 class="text-center font-weight-light my-4">Login</h3>
                   </div>
-                  <div class="card-body px-5 py-4">
+                  <div class="card-body">
                     <form method="post" action="/login">
                       <c:if test="${param.error != null}">
-                        <div class="alert alert-danger text-center my-2">
+                        <div class="my-2" style="color: red">
                           Invalid email or password.
                         </div>
                       </c:if>
+                      <c:if test="${param.logout != null}">
+                        <div class="my-2" style="color: green">
+                          Logout success.
+                        </div>
+                      </c:if>
 
-                      <div class="form-floating mb-4">
+                      <div class="form-floating mb-3">
                         <input
-                          class="form-control form-control-custom"
+                          class="form-control"
                           type="email"
                           placeholder="name@example.com"
                           name="username"
+                          id="username"
                           required
                         />
                         <label>Email address</label>
                       </div>
-                      <div class="form-floating mb-4">
+                      <div class="form-floating mb-3">
                         <input
-                          class="form-control form-control-custom"
+                          class="form-control"
                           type="password"
                           placeholder="Password"
                           name="password"
+                          id="password"
                           required
                         />
                         <label>Password</label>
                       </div>
-                      <input
-                        type="hidden"
-                        name="${_csrf.parameterName}"
-                        value="${_csrf.token}"
-                      />
 
-                      <div class="mt-4 mb-3 d-grid">
-                        <button
-                          class="btn btn-primary-custom btn-block"
-                          type="submit"
+                      <!-- Thêm checkbox Remember Me -->
+                      <div class="form-check mb-3">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          name="remember-me"
+                          id="rememberMe"
+                        />
+                        <label class="form-check-label" for="rememberMe"
+                          >Remember Me</label
                         >
-                          Login
-                        </button>
+                      </div>
+
+                      <div>
+                        <input
+                          type="hidden"
+                          name="${_csrf.parameterName}"
+                          value="${_csrf.token}"
+                        />
+                      </div>
+
+                      <div class="mt-4 mb-0">
+                        <div class="d-grid">
+                          <button class="btn btn-primary btn-block">
+                            Login
+                          </button>
+                        </div>
                       </div>
                     </form>
                   </div>
                   <div class="card-footer text-center py-3">
-                    <div class="small text-muted-custom">
+                    <div class="small">
                       <a href="/register">Need an account? Sign up!</a>
                     </div>
                   </div>
@@ -121,5 +114,31 @@ uri="http://www.springframework.org/tags/form" %>
       crossorigin="anonymous"
     ></script>
     <script src="/js/scripts.js"></script>
+    <script>
+      const rememberMe = document.getElementById("rememberMe");
+
+      const username = document.getElementById("username");
+      const password = document.getElementById("password");
+
+      if (localStorage.getItem("username")) {
+        username.value = localStorage.getItem("username");
+        rememberMe.checked = true;
+      }
+
+      if (localStorage.getItem("password")) {
+        password.value = localStorage.getItem("password");
+        rememberMe.checked = true;
+      }
+
+      rememberMe.addEventListener("change", () => {
+        if (rememberMe.checked) {
+          localStorage.setItem("username", username.value);
+          localStorage.setItem("password", password.value);
+        } else {
+          localStorage.removeItem("username");
+          localStorage.removeItem("password");
+        }
+      });
+    </script>
   </body>
 </html>

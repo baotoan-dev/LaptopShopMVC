@@ -2,17 +2,21 @@ package vn.hbtoan.laptopshop.controller.Admin;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import jakarta.validation.Valid;
 import vn.hbtoan.laptopshop.domain.Product;
 import vn.hbtoan.laptopshop.dto.Product.CreateProductDTO;
+import vn.hbtoan.laptopshop.dto.Product.GetProductDTO;
 import vn.hbtoan.laptopshop.service.Product.ProductService;
 
 @Controller
@@ -25,10 +29,12 @@ public class ProductController {
     }
 
     @GetMapping("/admin/product")
-    public String getProduct(Model model) {
-
-        List<Product> products = this.productService.getAll();
-        model.addAttribute("products", products);
+    public String getProduct(Model model, @ModelAttribute GetProductDTO getProductDTO) {
+        Page<Product> products = this.productService.searchProducts(getProductDTO);
+        model.addAttribute("products", products.getContent());
+        model.addAttribute("currentPage", getProductDTO.getPage());
+        model.addAttribute("totalPages", products.getTotalPages());
+        model.addAttribute("keyword", getProductDTO.getKeyword());
 
         return "admin/product/show";
     }

@@ -44,8 +44,8 @@ uri="http://www.springframework.org/tags/form" %>
               <li class="breadcrumb-item active">Product</li>
             </ol>
             <div class="mt-5">
-              <div class="row">
-                <div class="col-md-6 col-12 mx-auto max-w-700 bg-white p-5 shadow-sm border-radius-10 border min-w-300 max-h-500 overflow-auto">
+              <div class="row min-w-300 max-h-500 max-w-700 mx-auto h-100">
+                <div class="col-md-12 col-12 mx-auto bg-white p-5 shadow-sm border-radius-10 border">
                   <h3>Create a product</h3>
                   <hr />
                   <form:form
@@ -186,8 +186,8 @@ uri="http://www.springframework.org/tags/form" %>
             </div>
           </div>
         </main>
-        <jsp:include page="../layout/footer.jsp" />
       </div>
+      <jsp:include page="../layout/footer.jsp" />
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

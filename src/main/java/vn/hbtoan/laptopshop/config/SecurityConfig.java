@@ -7,6 +7,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+// import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +49,6 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // v6. lamda
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(DispatcherType.FORWARD,
@@ -72,8 +72,26 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .failureUrl("/login?error")
                         .successHandler(successHandler())
-                        .permitAll());
+                        .permitAll())
 
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll())
+
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/error/403"));
+
+                // .rememberMe(rememberMe -> rememberMe
+                //         .key("uniqueAndSecret")
+                //         .tokenValiditySeconds(86400));
+
+                // .sessionManagement((sessionManagement) -> sessionManagement
+                // .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                // .invalidSessionUrl("/logout?expired")
+                //             .maximumSessions(1)
+                // .maxSessionsPreventsLogin(false));
+            
         return http.build();
     }
 }
