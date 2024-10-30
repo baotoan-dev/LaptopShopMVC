@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hbtoan.laptopshop.domain.User;
 import vn.hbtoan.laptopshop.dto.User.CreateUserDTO;
+import vn.hbtoan.laptopshop.dto.User.GetUserDTO;
 import vn.hbtoan.laptopshop.dto.User.UpdateUserDTO;
 import vn.hbtoan.laptopshop.service.User.UserService;
-
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 
 
 @Controller
@@ -100,18 +100,17 @@ public class UserController {
     }
 
     @RequestMapping("/admin/user")
-    public String userPage(Model model, @RequestParam(value = "email", required = false) String email) {
-        if (email != null) {
-            List<User> users = this.userService.findByEmail(email);
-            model.addAttribute("users", users);
-            model.addAttribute("email", email);
-            return "admin/user/list";
-        }
-        else {
-            List<User> users = this.userService.findAll();
-            model.addAttribute("users", users);
-            return "admin/user/list";
-        }
+    public String userPage(Model model, @ModelAttribute GetUserDTO getUserDTO) {
+        Page<User> users = this.userService.searchUsers(getUserDTO);
+
+        model.addAttribute("users", users.getContent());
+        model.addAttribute("currentPage", getUserDTO.getPage());
+        model.addAttribute("totalPages", users.getTotalPages());
+        model.addAttribute("keyword", getUserDTO.getKeyword());
+        model.addAttribute("sort", getUserDTO.getSort());
+        model.addAttribute("cloudinaryPrefixUrl", cloudinaryPrefixUrl);
+
+        return "admin/user/list";
     }
 
     // :id

@@ -31,20 +31,36 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
               <li class="breadcrumb-item active">Users</li>
             </ol>
-              <div class="d-flex justify-content-between align-items-center">
-                <h1 class="">Table Users</h1>
-                <a href="/admin/user/create" class="btn btn-primary">Create User</a>
+            <div class="d-flex justify-content-between mb-4">
+              <h3></h3>
+              <div class="d-flex gap-2">
+                <form action="/admin/user" method="get">
+                  <input type="hidden" name="keyword" value="${keyword}" path="${keyword}" />
+                  <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <option value="" ${sort == '' ? 'selected' : ''}>Sort by</option>
+                    <option value="fullName_asc" ${sort == 'fullName_asc' ? 'selected' : ''}>Name A-Z</option>
+                    <option value="fullName_desc" ${sort == 'fullName_desc' ? 'selected' : ''}>Name Z-A</option>
+                    <option value="email_asc" ${sort == 'email_asc' ? 'selected' : ''}>Email A-Z</option>
+                    <option value="email_desc" ${sort == 'email_desc' ? 'selected' : ''}>Email Z-A</option>
+                  </select>
+                </form>                    
+                <a href="/admin/user/create" class="btn btn-primary"
+                  >Create a product</a
+                >
               </div>
+            </div>
               <!-- search -->
               <form action="/admin/user" method="get" id="searchForm">
                 <div class="input-group mb-3">
+                  <input type="hidden" name="sort" value="${sort}" path="${sort}" />
                   <input
                     type="text"
                     class="form-control"
                     placeholder="Search by email"
-                    name="email"
+                    name="keyword"
                     id="emailInput"
-                    value="${email}"
+                    value="${keyword}"
+                    path="${keyword}"
                   />
                 </div>
               </form>

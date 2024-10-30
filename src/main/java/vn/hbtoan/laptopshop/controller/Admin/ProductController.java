@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -35,6 +34,7 @@ public class ProductController {
         model.addAttribute("currentPage", getProductDTO.getPage());
         model.addAttribute("totalPages", products.getTotalPages());
         model.addAttribute("keyword", getProductDTO.getKeyword());
+        model.addAttribute("sort", getProductDTO.getSort());
 
         return "admin/product/show";
     }
@@ -61,7 +61,7 @@ public class ProductController {
                     System.out.println (error.getField() + " - " + error.getDefaultMessage());
                 }
     
-                return "/admin/product/create";
+                return "redirect:/admin/product/create";
             }
 
             Product product = this.productService.save(newProduct);
@@ -69,7 +69,7 @@ public class ProductController {
             if (product != null) {
                 return "redirect:/admin/product";
             } else {
-                return "/admin/product/create";
+                return "redirect:/admin/product/create";
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to create product: " + e.getMessage(), e);

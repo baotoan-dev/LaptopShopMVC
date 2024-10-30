@@ -1,10 +1,15 @@
 package vn.hbtoan.laptopshop.service.User;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import vn.hbtoan.laptopshop.domain.User;
 import vn.hbtoan.laptopshop.dto.User.CreateUserDTO;
+import vn.hbtoan.laptopshop.dto.User.GetUserDTO;
 import vn.hbtoan.laptopshop.dto.User.RegisterDTO;
 import vn.hbtoan.laptopshop.dto.User.UpdateUserDTO;
 import vn.hbtoan.laptopshop.repository.User.UserRepository;
@@ -205,4 +210,33 @@ public class UserService {
 
         return user;
     }
+
+    public Page<User> searchUsers(GetUserDTO getUserDTO) {
+        String sort = getUserDTO.getSort();
+        String keyword = getUserDTO.getKeyword();
+    
+        Sort sortOrder;
+        if (sort != null && sort.endsWith("_asc")) {
+            sortOrder = Sort.by(sort.replace("_asc", "")).ascending();
+        } else if (sort != null && sort.endsWith("_desc")) {
+            sortOrder = Sort.by(sort.replace("_desc", "")).descending();
+        } else {
+            sortOrder = Sort.unsorted();
+        }
+    
+        Pageable pageable = PageRequest.of(getUserDTO.getPage() - 1, getUserDTO.getSize(), sortOrder);
+    
+        // Determine search method based on presence of keyword
+        if (keyword != null && !keyword.isEmpty()) {
+            if ("email".equals(sort) || sort == null) {
+                return this.userRepository.findByEmailContaining(keyword, pageable);
+            } else if ("fullName".equals(sort)) {
+                return this.userRepository.findByFullNameContaining(keyword, pageable);
+            } else {
+                return this.userRepository.findByEmailOrFullNameContaining(keyword, keyword, pageable);
+            }
+        } else {
+            return this.userRepository.findAll(pageable);
+        }
+    }    
 }

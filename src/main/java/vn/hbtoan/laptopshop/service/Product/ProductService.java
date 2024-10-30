@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Sort;
 import vn.hbtoan.laptopshop.domain.Product;
 import vn.hbtoan.laptopshop.dto.Product.CreateProductDTO;
 import vn.hbtoan.laptopshop.dto.Product.GetProductDTO;
@@ -24,6 +24,7 @@ public class ProductService {
     }
 
     public Product save(CreateProductDTO newProduct) {
+        System.out.println(newProduct);
         
         Product product = modelMapper.map(newProduct, Product.class);
 
@@ -41,14 +42,24 @@ public class ProductService {
     }
 
     public Page<Product> searchProducts(GetProductDTO getProductDTO) {
-    Pageable pageable = PageRequest.of(getProductDTO.getPage() - 1, getProductDTO.getSize());
-    String keyword = getProductDTO.getKeyword();
+        String sort = getProductDTO.getSort();
+        String keyword = getProductDTO.getKeyword();
     
-    if (keyword != null && !keyword.isEmpty()) {
-        return this.productRepository.findByNameContainingIgnoreCase(keyword, pageable);
-    } else {
-        return this.productRepository.findAll(pageable);
+        Sort sortOrder;
+        if (sort != null && sort.endsWith("_asc")) {
+            sortOrder = Sort.by(sort.replace("_asc", "")).ascending();
+        } else if (sort != null && sort.endsWith("_desc")) {
+            sortOrder = Sort.by(sort.replace("_desc", "")).descending();
+        } else {
+            sortOrder = Sort.unsorted();
+        }
+    
+        Pageable pageable = PageRequest.of(getProductDTO.getPage() - 1, getProductDTO.getSize(), sortOrder);
+    
+        if (keyword != null && !keyword.isEmpty()) {
+            return this.productRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        } else {
+            return this.productRepository.findAll(pageable);
+        }
     }
-}
-
 }

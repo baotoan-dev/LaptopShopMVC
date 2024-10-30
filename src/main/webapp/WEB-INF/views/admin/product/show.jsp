@@ -31,14 +31,23 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
               <li class="breadcrumb-item active">Products</li>
             </ol>
-            <div class="mt-5">
+            <div>
               <div class="row">
                 <div class="col-12 mx-auto">
                   <div class="d-flex justify-content-between">
-                    <h3>Table products</h3>
-                    <a href="/admin/product/create" class="btn btn-primary"
-                      >Create a product</a
-                    >
+                    <h3></h3>
+                    <div class="d-flex gap-2">
+                      <form action="/admin/product" method="get">
+                        <input type="hidden" name="keyword" value="${keyword}" />
+                        <select name="sort" class="form-select" onchange="this.form.submit()">
+                            <option value="name_asc" ${sort == 'name_asc' ? 'selected' : ''}>Name A-Z</option>
+                            <option value="name_desc" ${sort == 'name_desc' ? 'selected' : ''}>Name Z-A</option>
+                        </select>
+                      </form>                    
+                      <a href="/admin/product/create" class="btn btn-primary"
+                        >Create a product</a
+                      >
+                    </div>
                   </div>
 
                   <div>
@@ -49,6 +58,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                       class="d-flex mt-3"
                       id="searchForm"
                     >
+                      <input type="hidden" name="sort" value="${sort}" />
                       <input
                         type="text"
                         name="keyword"
