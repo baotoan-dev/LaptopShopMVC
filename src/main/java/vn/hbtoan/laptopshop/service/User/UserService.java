@@ -97,6 +97,10 @@ public class UserService {
         return this.userRepository.findByEmailContaining(email);
     }
 
+    public User getUserByEmail(String email) {
+        return this.userRepository.findByEmail(email);
+    }
+
     public User findOneByEmail(String email) {
         return this.userRepository.findByEmail(email);
     }

@@ -19,14 +19,16 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     ></script>
   </head>
 
-  <body class="sb-nav-fixed">
+  <body class="sb-nav-fixed bg-light text-dark h-100">
     <jsp:include page="../layout/header.jsp" />
-    <div id="layoutSidenav">
-      <jsp:include page="../layout/sidebar.jsp" />
-      <div id="layoutSidenav_content">
-        <main>
+    <div id="layoutSidenav" class="flex flex-row col-12">
+      <div id="layoutSidenav_content" class="col-2">
+        <jsp:include page="../layout/sidebar.jsp" />
+      </div>
+      <div  class="col-10 mt-4">
+        <main class="w-full">
           <div class="container-fluid px-4">
-            <h1 class="mt-4">Manage Products</h1>
+            <h1 class="mt-4 text-2xl">Manage Products</h1>
             <ol class="breadcrumb mb-4">
               <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
               <li class="breadcrumb-item active">Products</li>
@@ -40,6 +42,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                       <form action="/admin/product" method="get">
                         <input type="hidden" name="keyword" value="${keyword}" />
                         <select name="sort" class="form-select" onchange="this.form.submit()">
+                            <option value="" ${sort == '' ? 'selected' : ''}>Sort by</option>
                             <option value="name_asc" ${sort == 'name_asc' ? 'selected' : ''}>Name A-Z</option>
                             <option value="name_desc" ${sort == 'name_desc' ? 'selected' : ''}>Name Z-A</option>
                         </select>
@@ -151,7 +154,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </div>
         </main>
       </div>
-      <jsp:include page="../layout/footer.jsp" />
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
@@ -170,5 +172,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         }, 500);
       });
     </script>
+    <jsp:include page="../layout/footer.jsp" />
   </body>
 </html>
