@@ -52,7 +52,7 @@ public class UserController {
                     System.out.println (error.getField() + " - " + error.getDefaultMessage());
                 }
     
-                return "/admin/user/create";
+                return "admin/user/create";
             }
     
             User newUser = this.userService.save(createUserDTO);
@@ -66,7 +66,6 @@ public class UserController {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
-    
 
     @RequestMapping(value = "/admin/user/update/{id}", method = RequestMethod.POST)
     public String requestMethodUpdate(Model model, @ModelAttribute UpdateUserDTO updateUserDTO, @PathVariable("id") Long id) {

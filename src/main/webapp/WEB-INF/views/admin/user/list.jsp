@@ -45,7 +45,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   </select>
                 </form>                    
                 <a href="/admin/user/create" class="btn btn-primary"
-                  >Create a product</a
+                  >Create a user</a
                 >
               </div>
             </div>

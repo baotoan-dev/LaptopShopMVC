@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.hbtoan.laptopshop.service.validator.StrongPassword;
 
 @Data
 @AllArgsConstructor
@@ -24,8 +25,8 @@ public class RegisterDTO {
     private String email;
 
     @NotNull(message = "Password is required")
-    @Size(min = 6, max = 50, message = "Password must be between 6 and 50 characters")
-    // @StrongPassword(message = "Must be 8 characters long and combination of uppercase letters, lowercase letters, numbers, special characters.")
+    @Size(min = 8, max = 50, message = "Password must be between 8 and 50 characters")
+    @StrongPassword(message = "Password must be a combination of uppercase letters, lowercase letters, numbers, and special characters.")
     private String password;
 
     @NotNull(message = "Confirm password is required")
